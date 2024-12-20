@@ -1,0 +1,7 @@
+{
+  "name": "mit_id-sandbox",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
