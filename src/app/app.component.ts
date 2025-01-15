@@ -22,7 +22,7 @@ export class AppComponent {
 				// Get the last element with pop()
 				const appPath = pathArray.pop();
 				if (appPath) {
-					this.router.navigateByUrl(appPath);
+					console.log('App opened with URL: ' + appPath);
 				}
 			});
 		});
