@@ -1,0 +1,5 @@
+[{
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target" : { "namespace": "android_app", "package_name": "dk.ionic.mitIdTester",
+                 "sha256_cert_fingerprints": ["D3:88:C0:2C:76:42:B1:AF:02:73:84:63:49:38:42:3A:33:29:C8:9C:64:4E:31:83:E0:17:2D:AB:A1:04:DA:45"] }
+  }]
