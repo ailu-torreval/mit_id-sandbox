@@ -12,7 +12,7 @@ export class HomePage implements OnInit {
   url = 'https://nykapital-group-aps.sandbox.signicat.com';
   signicat_secret = 'rXbA5fvDVbQdXNuKLvFUfzTd7P7xl9GtnKbKMDxtfc3VIJD7';
   client_id = 'sandbox-high-train-160';
-  redirectUri = 'https://mitid-test-99d1b.web.app';
+  redirectUri = 'https://mitid-test-99d1b.web.app/home';
   // redirectUri = 'https://api2.nykapital.dk/getAuthData';
   
   paramsLog: any = null;
