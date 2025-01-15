@@ -10,5 +10,12 @@
   <ion-button (click)="handleSignicat()">
     Connect to mit id
   </ion-button>
+  <ion-button (click)="getToken()">
+   get token
+  </ion-button>
   <pre>{{ paramsLog | json }}</pre>
+  <ion-text>Stored state: {{storedState}}</ion-text>
+  <br />
+  <ion-text>Stored code verifier: {{storedCodeVerifier}}</ion-text>
+  <pre>{{ response_data | json }}</pre>
 </ion-content>
