@@ -1,0 +1,11 @@
+{
+	"applinks": {
+		"apps": [],
+		"details": [
+			{
+				"appID": "2N5GJD548T.dk.ionic.mitIdTester",
+				"paths": ["*"]
+			}
+		]
+	}
+}
