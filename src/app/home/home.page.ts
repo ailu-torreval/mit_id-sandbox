@@ -91,10 +91,31 @@ export class HomePage implements OnInit {
         `response_type=code&` +
         `redirect_uri=${this.redirectUri}&` +
         `state=${state}&` +
-        `scope=openid%20profile%20nin&` +
+        `scope=openid%20profile%20nin%20date-of-birth%20email%20nationality%20mitid-extra%20address%20gender%20mitid-business%20phone&` +
         `code_challenge=${codeChallenge}&` +
-        `code_challenge_method=S256`;
+        `code_challenge_method=S256`; 
 
+        // {
+        //   "name": "Saga Poulsen",
+        //   "family_name": "Poulsen",
+        //   "given_name": "Saga",
+        //   "birthdate": "1932-02-09",
+        //   "nin": "0902322779",
+        //   "nin_type": "PERSON",
+        //   "nin_issuing_country": "DK",
+        //   "mitid_has_cpr": "true",
+        //   "mitid_transaction_id": "b09eab99-85e0-41e4-beed-99e85520194d",
+        //   "mitid_reference_text_body": " ",
+        //   "mitid_cpr_source": "database",
+        //   "mitid_ial": "SUBSTANTIAL",
+        //   "mitid_loa": "SUBSTANTIAL",
+        //   "mitid_aal": "SUBSTANTIAL",
+        //   "mitid_fal": "HIGH",
+        //   "mitid_uuid": "8314ab25-bf71-49ff-aee6-15e7d084cec1",
+        //   "idp_issuer": "MitID",
+        //   "sub": "raa2gRXppmWAK01yx6TDB4OExDK0oBQRjL-qR3MCx1E="
+        // }
+        // "8314ab25-bf71-49ff-aee6-15e7d084cec1"
       window.location.href = authorizationUrl; 
     } catch (error) {
       // Handle errors during code generation or URL construction
