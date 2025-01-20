@@ -13,19 +13,21 @@ export class AppComponent {
 		this.initializeApp();
 	}
 
-	initializeApp() {
-		App.addListener('appUrlOpen', (event: URLOpenListenerEvent) => {
-			this.zone.run(() => {
-				const domain = 'devdactic.com';
-
-				const pathArray = event.url.split(domain);
-				// Get the last element with pop()
-				const appPath = pathArray.pop();
-				if (appPath) {
-					console.log('App opened with URL: ' + appPath);
-				}
+	async initializeApp() {
+		App.addListener('appUrlOpen', (event: any) => {
+		  console.log('App opened with URL:', event);
+		  
+		  if (event.url.includes('/home')) {
+			console.log('Home URL detected:', event.url);
+			// Handle the URL parameters
+			const urlParams = new URLSearchParams(new URL(event.url).search);
+			const params: {[key: string]: string} = {};
+			urlParams.forEach((value, key) => {
+			  params[key] = value;
 			});
+			console.log('URL parameters:', params);
+		  }
 		});
-	}
+	  }
 
 }

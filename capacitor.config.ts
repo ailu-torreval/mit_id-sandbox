@@ -7,14 +7,18 @@ const config: CapacitorConfig = {
   server: {
     androidScheme: 'https',
     hostname: 'mitid-test-99d1b.web.app',
-    iosScheme: 'https'
+    iosScheme: 'https',
+    cleartext: true
   },
   ios: {
-    scheme: 'mit_id-sandbox'
+    scheme: 'mit_id-sandbox',
+    limitsNavigationsToAppBoundDomains: true
   },
   plugins: {
-    CapacitorURLScheme: {
-      schemes: ['mit_id-sandbox']
+    App: {
+      appUrlOpen: {
+        enabled: true
+      }
     }
   }
 };
