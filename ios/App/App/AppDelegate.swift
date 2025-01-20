@@ -7,50 +7,94 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        // Debug logging for launch
+        print("DEBUG: App launching with options:", launchOptions ?? [:])
         return true
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
-        // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-        // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
+        print("DEBUG: Application will resign active")
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
-        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        print("DEBUG: Application did enter background")
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
-        // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
+        print("DEBUG: Application will enter foreground")
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
-        // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        print("DEBUG: Application did become active")
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
-        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+        print("DEBUG: Application will terminate")
     }
 
+    // Universal Links & Deep Links handling
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-        // Called when the app was launched with a url. Feel free to add additional processing here,
-        // but if you want the App API to support tracking app url opens, make sure to keep this call
+        print("DEBUG: ====== App opened with URL ======")
+        print("DEBUG: Complete URL:", url.absoluteString)
+        print("DEBUG: URL scheme:", url.scheme ?? "no scheme")
+        print("DEBUG: URL host:", url.host ?? "no host")
+        print("DEBUG: URL path:", url.path)
+        print("DEBUG: Query parameters:", url.query ?? "no query")
+        print("DEBUG: URL options:", options)
+        print("DEBUG: ================================")
+        
         return ApplicationDelegateProxy.shared.application(app, open: url, options: options)
     }
 
+    // Universal Links handling
     func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
-        // Called when the app was launched with an activity, including Universal Links.
-        // Feel free to add additional processing here, but if you want the App API to support
-        // tracking app url opens, make sure to keep this call
+        print("DEBUG: ====== Universal Link Activity ======")
+        print("DEBUG: Activity Type:", userActivity.activityType)
+        
+        if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
+            if let webpageURL = userActivity.webpageURL {
+                print("DEBUG: Received Universal Link URL:", webpageURL.absoluteString)
+                print("DEBUG: URL scheme:", webpageURL.scheme ?? "no scheme")
+                print("DEBUG: URL host:", webpageURL.host ?? "no host")
+                print("DEBUG: URL path:", webpageURL.path)
+                print("DEBUG: Query parameters:", webpageURL.query ?? "no query")
+            } else {
+                print("DEBUG: No webpage URL found in activity")
+            }
+        } else {
+            print("DEBUG: Activity is not a browsing activity")
+        }
+        
+        print("DEBUG: Activity userInfo:", userActivity.userInfo ?? [:])
+        print("DEBUG: Activity title:", userActivity.title ?? "No title")
+        print("DEBUG: ===================================")
+        
         return ApplicationDelegateProxy.shared.application(application, continue: userActivity, restorationHandler: restorationHandler)
     }
 
+    // Push Notifications registration handling
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        print("DEBUG: Successfully registered for push notifications with token:", deviceToken.map { String(format: "%02.2hhx", $0) }.joined())
         NotificationCenter.default.post(name: .capacitorDidRegisterForRemoteNotifications, object: deviceToken)
-    }   
+    }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        print("DEBUG: Failed to register for push notifications:", error.localizedDescription)
         NotificationCenter.default.post(name: .capacitorDidFailToRegisterForRemoteNotifications, object: error)
+    }
+
+    // Additional Universal Links support
+    func application(_ application: UIApplication, willContinueUserActivityWithType userActivityType: String) -> Bool {
+        print("DEBUG: Will continue user activity of type:", userActivityType)
+        return true
+    }
+
+    func application(_ application: UIApplication, didFailToContinueUserActivityWithType userActivityType: String, error: Error) {
+        print("DEBUG: Failed to continue user activity of type:", userActivityType)
+        print("DEBUG: Error:", error.localizedDescription)
+    }
+
+    func application(_ application: UIApplication, didUpdate userActivity: NSUserActivity) {
+        print("DEBUG: Did update user activity:", userActivity)
     }
 }
