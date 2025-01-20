@@ -1,1 +1,1 @@
-{"applinks":{"apps":[],"details":[{"appID":"2N5GJD548T.dk.ionic.mitIdTester","paths":["*"]}]},"activitycontinuation":{"apps":["2N5GJD548T.dk.ionic.mitIdTester"]},"webcredentials":{"apps":["2N5GJD548T.dk.ionic.mitIdTester"]}}
+{"applinks":{"apps":[],"details":[{"appID":"2N5GJD548T.dk.ionic.mitIdTester","paths":["/home?*","/home","/home/*","*"]}]},"activitycontinuation":{"apps":["2N5GJD548T.dk.ionic.mitIdTester"]},"webcredentials":{"apps":["2N5GJD548T.dk.ionic.mitIdTester"]}}
