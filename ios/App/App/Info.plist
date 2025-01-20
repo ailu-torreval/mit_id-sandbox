@@ -45,7 +45,22 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
-	<key>com.apple.developer.associated-domains.mdm-managed</key>
-	<true/>
+    <key>com.apple.developer.associated-domains</key>
+    <array>
+        <string>applinks:mitid-test-99d1b.web.app</string>
+        <string>applinks:mitid-test-99d1b.firebaseapp.com</string>
+    </array>
+
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>https</string>
+    </array>
+    
+    <key>com.apple.developer.associated-domains.mdm-managed</key>
+    <true/>
+
+
+    <key>UIApplicationSupportsIndirectInputEvents</key>
+    <true/>
 </dict>
 </plist>

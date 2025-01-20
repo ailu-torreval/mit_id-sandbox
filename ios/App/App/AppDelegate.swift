@@ -15,12 +15,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         print("DEBUG: ====== Deep Link Opened ======")
         print("DEBUG: URL:", url.absoluteString)
         print("DEBUG: Options:", options)
+        print("DEBUG: Scheme:", url.scheme ?? "no scheme")
+        print("DEBUG: Host:", url.host ?? "no host")
+        print("DEBUG: Path:", url.path)
+        print("DEBUG: Query:", url.query ?? "no query")
+        print("DEBUG: ============================")
         
         return ApplicationDelegateProxy.shared.application(app, open: url, options: options)
     }
 
     func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
         print("DEBUG: ====== Universal Link Activity ======")
+        print("DEBUG: Activity Type:", userActivity.activityType)
         
         if userActivity.activityType == NSUserActivityTypeBrowsingWeb {
             guard let url = userActivity.webpageURL else {
@@ -28,17 +34,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 return false
             }
             
-            print("DEBUG: Received URL:", url.absoluteString)
+            print("DEBUG: Universal Link URL:", url.absoluteString)
+            print("DEBUG: Scheme:", url.scheme ?? "no scheme")
             print("DEBUG: Host:", url.host ?? "no host")
             print("DEBUG: Path:", url.path)
             print("DEBUG: Query:", url.query ?? "no query")
             
-            // Try to explicitly handle the home path with query parameters
-            if url.path == "/home" {
-                print("DEBUG: Matched /home path")
-                // You might want to handle the URL parameters here
-                let components = URLComponents(url: url, resolvingAgainstBaseURL: true)
-                print("DEBUG: URL Components:", components?.queryItems ?? [])
+            if url.path.contains("home") {
+                print("DEBUG: Home path detected")
+                if let components = URLComponents(url: url, resolvingAgainstBaseURL: true) {
+                    print("DEBUG: Query Items:", components.queryItems ?? [])
+                }
             }
         }
         
