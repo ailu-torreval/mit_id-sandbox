@@ -6,12 +6,6 @@
       "**/.*",
       "**/node_modules/**"
     ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ],
     "headers": [
       {
         "source": "/.well-known/apple-app-site-association",
@@ -22,16 +16,19 @@
           },
           {
             "key": "Cache-Control",
-            "value": "no-cache"
+            "value": "public, max-age=300"
+          },
+          {
+            "key": "Access-Control-Allow-Origin",
+            "value": "*"
           }
         ]
       }
     ],
-    "redirects": [
+    "rewrites": [
       {
-        "source": "/.well-known/apple-app-site-association.json",
-        "destination": "/.well-known/apple-app-site-association",
-        "type": 301
+        "source": "**",
+        "destination": "/index.html"
       }
     ]
   }
