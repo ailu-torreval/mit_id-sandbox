@@ -19,8 +19,19 @@
           {
             "key": "Content-Type",
             "value": "application/json"
+          },
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
           }
         ]
+      }
+    ],
+    "redirects": [
+      {
+        "source": "/.well-known/apple-app-site-association.json",
+        "destination": "/.well-known/apple-app-site-association",
+        "type": 301
       }
     ]
   }
