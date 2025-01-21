@@ -9,7 +9,12 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "preserve-assets": "cp -r src/.well-known www/.well-known",
+    "sync": "ionic cap sync && npm run preserve-assets",
+    "build:dev": "ionic build && npx cap copy && npm run preserve-assets",
+    "build:prod": "ionic build --prod && npx cap copy && npm run preserve-assets",
+    "deploy": "ionic cap sync && npm run build:prod && npx cap copy && firebase deploy"
   },
   "private": true,
   "dependencies": {
