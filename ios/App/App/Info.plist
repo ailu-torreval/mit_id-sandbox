@@ -62,5 +62,16 @@
 
     <key>UIApplicationSupportsIndirectInputEvents</key>
     <true/>
+	<key>CFBundleURLTypes</key>
+	<array>
+  		<dict>
+		<key>CFBundleURLSchemes</key>
+		<array>
+			<string>dk.ionic.mitIdTester</string>
+		</array>
+    	<key>CFBundleURLName</key>
+    	<string>dk.ionic.mitIdTester</string>
+	</dict>
+</array>
 </dict>
 </plist>

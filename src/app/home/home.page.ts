@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 import { Base64 } from 'js-base64';
 
 @Component({
@@ -12,8 +13,10 @@ export class HomePage implements OnInit {
   url = 'https://nykapital-group-aps.sandbox.signicat.com';
   signicat_secret = 'rXbA5fvDVbQdXNuKLvFUfzTd7P7xl9GtnKbKMDxtfc3VIJD7';
   client_id = 'sandbox-high-train-160';
-  redirectUri = 'https://mitid-test-99d1b.web.app/home';
+  redirectUri = 'https://mitid-test-99d1b.web.app';
+  // redirectUri = 'https://mitid-test-99d1b.web.app/app-switch';
   // redirectUri = 'https://api2.nykapital.dk/getAuthData';
+  message: string = "";
   
   paramsLog: any = null;
   encoded_credentials: string = "";
@@ -24,13 +27,14 @@ export class HomePage implements OnInit {
   storedState: any = null;
   response_data: any = null;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private cdr: ChangeDetectorRef, private alertController: AlertController) {}
 
   ngOnInit() {
     const combined = this.client_id + ":" + this.signicat_secret;
     this.encoded_credentials = Base64.encode(combined);
     console.log(this.encoded_credentials);
     this.route.queryParams.subscribe(params => {
+      this.message = params['state'];
       console.log("PARAMS",params)
       this.code = params['code'];
       this.state = params['state'];
@@ -183,5 +187,12 @@ export class HomePage implements OnInit {
     //Check your browser console for a more detailed JSON object.
     console.log("DATA",json)
     this.response_data = json;
+    this.alertController.create({
+      header: 'User Info',
+      message: JSON.stringify(json),
+      buttons: ['OK']
+    }).then(alert => alert.present());
+
+    this.cdr.detectChanges();
 } 
 }

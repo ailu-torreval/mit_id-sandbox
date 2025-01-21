@@ -14,41 +14,49 @@ export class AppComponent {
 	}
 
 	async initializeApp() {
+		console.log('Initializing app...');
+		
 		App.addListener('appUrlOpen', (event: any) => {
-			console.log('DEBUG: ====== App URL Open Event ======');
-			console.log('DEBUG: Full event:', event);
-			console.log('DEBUG: URL received:', event.url);
+		  console.log('App opened with URL:', event);
+		  
+		  try {
+			const urlString = event.url;
+			let queryParams: {[key: string]: string} = {};
 			
-			if (event.url.includes('/home')) {
-			  console.log('DEBUG: Home URL detected');
-			  try {
-				const url = new URL(event.url);
-				console.log('DEBUG: URL parts:', {
-				  protocol: url.protocol,
-				  host: url.host,
-				  pathname: url.pathname,
-				  search: url.search
+			if (urlString.startsWith('dk.ionic.mitIdTester://')) {
+			  // Handle custom scheme
+			  const withoutScheme = urlString.replace('dk.ionic.mitIdTester://', '');
+			  const parts = withoutScheme.split('?');
+			  const path = parts[0].replace('//', '/').replace(/^\//, '');
+			  
+			  if (parts.length > 1) {
+				const searchParams = new URLSearchParams(parts[1]);
+				searchParams.forEach((value, key) => {
+				  queryParams[key] = value;
 				});
-				
-				const urlParams = new URLSearchParams(url.search);
-				const params: {[key: string]: string} = {};
-				urlParams.forEach((value, key) => {
-				  params[key] = value;
-				  console.log('DEBUG: Parameter:', key, '=', value);
-				});
-				console.log('DEBUG: All parameters:', params);
-				
-				// Navigate to home with the parameters
-				this.router.navigate(['/home'], { queryParams: params });
-			  } catch (error) {
-				console.error('DEBUG: Error processing URL:', error);
 			  }
-			} else {
-			  console.log('DEBUG: URL does not contain /home path');
+			  
+			  console.log('Custom URL - Navigating to:', path, 'with params:', queryParams);
+			  this.zone.run(() => {
+				this.router.navigate([`/${path}`], { queryParams });
+			  });
+			} else if (urlString.startsWith('https://')) {
+			  // Handle Universal Links
+			  const url = new URL(urlString);
+			  url.searchParams.forEach((value, key) => {
+				queryParams[key] = value;
+			  });
+			  
+			  console.log('Universal Link - Navigating with params:', queryParams);
+			  
+			  // Since your auth redirect comes to root ('/'), navigate to home with params
+			  this.zone.run(() => {
+				this.router.navigate(['/home'], { queryParams });
+			  });
 			}
-			console.log('DEBUG: ==============================');
-		  });
-
+		  } catch (e) {
+			console.error('Error handling URL:', e);
+		  }
+		});
 	  }
-
-}
+	}

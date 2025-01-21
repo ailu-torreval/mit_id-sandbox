@@ -10,6 +10,10 @@ const routes: Routes = [
     path: '',
     redirectTo: 'home',
     pathMatch: 'full'
+  },
+  {
+    path: 'app-switch',
+    loadChildren: () => import('./pages/app-switch/app-switch.module').then( m => m.AppSwitchPageModule)
   }
 ];
 

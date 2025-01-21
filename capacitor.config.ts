@@ -7,11 +7,10 @@ const config: CapacitorConfig = {
   server: {
     androidScheme: 'https',
     hostname: 'mitid-test-99d1b.web.app',
-    iosScheme: 'https',
-    cleartext: true
+    iosScheme: 'https'
   },
   ios: {
-    scheme: 'mit_id-sandbox',
+    scheme: 'dk.ionic.mitIdTester', // Custom URL scheme
     limitsNavigationsToAppBoundDomains: true
   },
   plugins: {
