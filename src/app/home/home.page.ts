@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Capacitor } from '@capacitor/core';
@@ -25,21 +26,24 @@ export class HomePage implements OnInit {
   storedCodeVerifier: any = null;
   storedState: any = null;
   response_data: any = null;
+  user_data: any = null;
 
   constructor(
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef,
-    private alertController: AlertController
+    private alertController: AlertController,
+    private http: HttpClient
   ) {}
 
   ngOnInit() {
     const combined = this.client_id + ':' + this.signicat_secret;
     this.encoded_credentials = Base64.encode(combined);
     console.log(this.encoded_credentials);
-    const platform = Capacitor.getPlatform(); 
-    this.redirectUri = platform === 'web'
-    ? 'https://mitid-test-99d1b.web.app'
-    : 'https://mitid-test-99d1b.web.app/app-switch';
+    const platform = Capacitor.getPlatform();
+    this.redirectUri =
+      platform === 'web'
+        ? 'https://mitid-test-99d1b.web.app'
+        : 'https://mitid-test-99d1b.web.app/app-switch';
 
     this.route.queryParams.subscribe((params) => {
       this.message = params['state'];
@@ -99,7 +103,6 @@ export class HomePage implements OnInit {
       // Store code_verifier and state securely (e.g., in session storage)
       sessionStorage.setItem('code_verifier', codeVerifier);
       sessionStorage.setItem('state', state);
-
 
       const authorizationUrl =
         `${this.url}/auth/open/connect/authorize?` +
@@ -195,14 +198,20 @@ export class HomePage implements OnInit {
     //Check your browser console for a more detailed JSON object.
     console.log('DATA', json);
     this.response_data = json;
-    this.alertController
-      .create({
-        header: 'User Info',
-        message: JSON.stringify(json),
-        buttons: ['OK'],
-      })
-      .then((alert) => alert.present());
-
+    if (this.response_data !== null) {
+      this.getNyKuser();
+    }
     this.cdr.detectChanges();
+  }
+
+  getNyKuser() {
+    this.http
+      .post('https://api2.nykapital.dk/nyk_authenticate', {
+        mitid_uuid: this.response_data.mitid_uuid,
+      })
+      .subscribe((data) => {
+        this.user_data = data;
+        console.log("DATA FROM NYK", data);
+      });
   }
 }
