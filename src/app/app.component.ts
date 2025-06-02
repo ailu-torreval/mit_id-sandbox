@@ -1,5 +1,5 @@
 import { Component, NgZone } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { App, URLOpenListenerEvent } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
 
@@ -10,8 +10,39 @@ import { Capacitor } from '@capacitor/core';
   standalone: false,
 })
 export class AppComponent {
-  constructor(private router: Router, private zone: NgZone) {
-    this.initializeApp();
+  code:string ='';
+  state:string ='';
+  storedState:string | null  ='';
+  storedCodeVerifier:string | null  ='';
+  isLoading: boolean = false;
+  private hasNavigated = false; // Add this flag
+  constructor(private router: Router, private zone: NgZone, private route: ActivatedRoute) {
+    // this.initializeApp();
+    // this.goToLogin();
+
+    console.log('Full URL:', window.location.href);
+    console.log('URL search params:', window.location.search);
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    const state = urlParams.get('state');
+    
+    if (code && state) {
+      console.log('OAuth parameters found:', { code, state });
+      // Navigate to home with the parameters
+      this.router.navigate(['/app-switch'], { 
+        queryParams: { code, state, scope: urlParams.get('scope'), session_state: urlParams.get('session_state') }
+      });
+    }
+    // this.goToHome();
+  }
+
+  goToLogin() {
+    this.router.navigate(['/login']);
+  }
+
+  goToHome() {
+    this.router.navigate(['/home']);
   }
 
   async initializeApp() {

@@ -14,6 +14,10 @@ const routes: Routes = [
   {
     path: 'app-switch',
     loadChildren: () => import('./pages/app-switch/app-switch.module').then( m => m.AppSwitchPageModule)
+  },
+  {
+    path: 'login',
+    loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
   }
 ];
 

@@ -1,7 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { App } from '@capacitor/app';
 import { Capacitor } from '@capacitor/core';
+import { DefaultSystemBrowserOptions, InAppBrowser } from '@capacitor/inappbrowser';
 import { AlertController } from '@ionic/angular';
 import { Base64 } from 'js-base64';
 
@@ -13,7 +15,9 @@ import { Base64 } from 'js-base64';
 })
 export class HomePage implements OnInit {
   url = 'https://nykapital-group-aps.sandbox.signicat.com';
-  signicat_secret = 'rXbA5fvDVbQdXNuKLvFUfzTd7P7xl9GtnKbKMDxtfc3VIJD7';
+  // url = 'https://nykapital-group-aps.app.signicat.com';
+  // signicat_secret = 'rXbA5fvDVbQdXNuKLvFUfzTd7P7xl9GtnKbKMDxtfc3VIJD7';
+  // client_id = 'prod-lively-tray-727';
   client_id = 'sandbox-high-train-160';
   redirectUri = 'https://mitid-test-99d1b.web.app';
   message: string = '';
@@ -36,13 +40,14 @@ export class HomePage implements OnInit {
   ) {}
 
   ngOnInit() {
-    const combined = this.client_id + ':' + this.signicat_secret;
-    this.encoded_credentials = Base64.encode(combined);
+    // const combined = this.client_id + ':' + this.signicat_secret;
+    // this.encoded_credentials = Base64.encode(combined);
     console.log(this.encoded_credentials);
     const platform = Capacitor.getPlatform();
     this.redirectUri =
       platform === 'web'
-        ? 'https://mitid-test-99d1b.web.app'
+        ? 'http://localhost:8100'
+        // ? 'https://mitid-test-99d1b.web.app'
         : 'https://mitid-test-99d1b.web.app/app-switch';
 
     this.route.queryParams.subscribe((params) => {
@@ -110,7 +115,7 @@ export class HomePage implements OnInit {
         `response_type=code&` +
         `redirect_uri=${this.redirectUri}&` +
         `state=${state}&` +
-        `scope=openid%20profile%20nin%20mitid-extra%20mitid-business&` +
+        `scope=openid%20profile%20mitid-extra&` +
         `code_challenge=${codeChallenge}&` +
         `code_challenge_method=S256`;
 
@@ -135,7 +140,30 @@ export class HomePage implements OnInit {
       //   "sub": "raa2gRXppmWAK01yx6TDB4OExDK0oBQRjL-qR3MCx1E="
       // }
       // "8314ab25-bf71-49ff-aee6-15e7d084cec1"
-      window.location.href = authorizationUrl;
+      
+      console.log('Authorization URL:', authorizationUrl);
+      if (Capacitor.getPlatform() === 'web') {
+        window.location.href = authorizationUrl;
+      } else { 
+        const url = `${this.redirectUri}?saved_state=${state}&code_challenge=${codeChallenge}`;
+        this.checkForState(state);
+        await InAppBrowser.openInSystemBrowser({
+          url: url,
+          options: DefaultSystemBrowserOptions
+        });
+
+        InAppBrowser.addListener('browserClosed', () => {
+          console.log('Browser closed - checking for OAuth completion');
+        });
+  
+        // Also listen for app state changes (when returning from browser)
+        App.addListener('appStateChange', (state) => {
+          if (state.isActive) {
+            console.log('App became active - checking for OAuth completion');
+          }
+        });
+        
+      }
     } catch (error) {
       // Handle errors during code generation or URL construction
       console.error('Error initiating Signicat login:', error);
@@ -149,7 +177,7 @@ export class HomePage implements OnInit {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          Authorization: `Basic ${this.encoded_credentials}`,
+          // Authorization: `Basic ${this.encoded_credentials}`,
         },
         body: new URLSearchParams({
           client_id: this.client_id,
@@ -205,13 +233,86 @@ export class HomePage implements OnInit {
   }
 
   getNyKuser() {
-    this.http
-      .post('https://api2.nykapital.dk/nyk_authenticate', {
-        mitid_uuid: this.response_data.mitid_uuid,
-      })
-      .subscribe((data) => {
-        this.user_data = data;
-        console.log("DATA FROM NYK", data);
-      });
+    console.log({
+          cpr: this.response_data.nin,
+          mitid_uuid: this.response_data.mitid_uuid,
+        })
+    // this.http
+    //   .post('https://api2.nykapital.dk/nyk_authenticate', {
+    //     cpr: this.response_data.nin,
+    //     mitid_uuid: this.response_data.mitid_uuid,
+    //   })
+    //   .subscribe((data) => {
+    //     this.user_data = data;
+    //     console.log("DATA FROM NYK", data);
+    //   });
+  }
+
+  async checkForState(state: string) {
+    try {
+        // Wait for the initial 20 seconds before starting the loop
+        await new Promise(resolve => setTimeout(resolve, 20000));
+
+        const pollInterval = 10000; // 10 seconds
+        let polling = true;
+
+        while (polling) {
+            console.log(`Polling for state: ${state}`);
+            
+            const response = await fetch(`https://api2.nykapital.dk/oauth/poll/${state}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('🍓🍓🍓 Response received:', data);
+
+                // Stop polling if session is found (not an error response)
+                if (!data.error) {
+                    polling = false;
+                    // Handle the response data here
+                    this.handleOAuthResponse(data);
+                    return;
+                }
+            } else {
+                console.log(`Polling failed with status: ${response.status}`);
+            }
+
+            // Wait for 10 seconds before the next poll
+            if (polling) {
+                await new Promise(resolve => setTimeout(resolve, pollInterval));
+            }
+        }
+    } catch (error) {
+        console.error('Error checking state:', error);
+    }
+}
+
+private handleOAuthResponse(data: any) {
+    // Process the response - session was found
+    console.log('Session found, processing:', data);
+    if (data.code && data.state) {
+        this.code = data.code;
+        this.state = data.state;
+        // Continue with your OAuth flow
+        this.getToken();
+        InAppBrowser.close();
+    }
+}
+  async redirect() {
+    await InAppBrowser.openInSystemBrowser({
+      url: "https://cms.nykapital.dk",
+      options: DefaultSystemBrowserOptions
+    });
+    // window.location.href = "https://cms.nykapital.dk";
+  }
+  redirect2() {
+    window.location.href = "https://cms.nykapital.dk/login";
+  }
+  redirect3() {
+    window.location.href = "dk.nykapital.client://login";
   }
 }
