@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BiometryType, NativeBiometric } from 'capacitor-native-biometric';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,7 @@ export class LoginPage implements OnInit {
   result: any;
   credentials: any;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   async ngOnInit() {
     this.result = await NativeBiometric.isAvailable({ useFallback: true });
@@ -56,6 +57,10 @@ export class LoginPage implements OnInit {
     } catch (e) {
       console.log("ERROR 48", e);
     }
+  }
+
+  goHome() {
+    this.router.navigate(['home'])
   }
 
   async saveCredentials(data: { email: string; password: string }) {

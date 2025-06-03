@@ -23,9 +23,11 @@ export class AppSwitchPage implements OnInit, OnDestroy {
   private hasStartedLogin = false;
   private paramsSubscription: Subscription | null = null;
 
-  url = 'https://nykapital-group-aps.sandbox.signicat.com';
-  client_id = 'sandbox-high-train-160';
   redirectUri = 'https://mitid-test-99d1b.web.app/app-switch';
+  url = 'https://nykapital-group-aps.app.signicat.com';
+  client_id = 'prod-lively-tray-727';
+  // url = 'https://nykapital-group-aps.sandbox.signicat.com';
+  // client_id = 'sandbox-high-train-160';
 
   constructor(private route: ActivatedRoute) { }
 
@@ -64,10 +66,11 @@ export class AppSwitchPage implements OnInit, OnDestroy {
       
       // Second visit: has code and state (process callback)
       else if (this.code && this.state && !this.hasProcessedCallback) {
-        alert('🟢 Processing OAuth callback');
+        // alert('🟢 Processing OAuth callback');
         this.hasProcessedCallback = true;
         this.step = 'redirect';
         this.sendDataToServer();
+        this.startCounter();
       }
       
       else {
@@ -104,7 +107,7 @@ export class AppSwitchPage implements OnInit, OnDestroy {
       code_challenge: this.code_challenge,
       saved_state: this.saved_state
     };
-    alert('🔵 Starting MitID Login with: ' + JSON.stringify(loginInfo));
+    // alert('🔵 Starting MitID Login with: ' + JSON.stringify(loginInfo));
     
     const authorizationUrl =
       `${this.url}/auth/open/connect/authorize?` +
@@ -138,7 +141,7 @@ export class AppSwitchPage implements OnInit, OnDestroy {
         state: this.state
       };
 
-      alert('🔵 Sending payload to server: ' + JSON.stringify(payload));
+      // alert('🔵 Sending payload to server: ' + JSON.stringify(payload));
 
       const response = await fetch('https://api2.nykapital.dk/oauth/callback', {
         method: 'POST',
@@ -148,10 +151,10 @@ export class AppSwitchPage implements OnInit, OnDestroy {
         body: JSON.stringify(payload)
       });
 
-      alert('🔵 Server response status: ' + response.status);
+      // alert('🔵 Server response status: ' + response.status);
       
       if (response.status === 200 || response.status === 201) {
-        alert('✅ SUCCESS: ' + response.status);
+        // alert('✅ SUCCESS: ' + response.status);
         // const contentType = response.headers.get('content-type');
         // if (contentType && contentType.includes('application/json')) {
         //   const data = await response.json();
@@ -173,8 +176,6 @@ export class AppSwitchPage implements OnInit, OnDestroy {
       this.step = 'error';
       alert('🔴 Error sending data to server: ' + error.message);
     } finally {
-      this.step = 'error';
-      alert('🔵 Finished processing server request');
       this.isProcessing = false;
     }
   }

@@ -19,10 +19,11 @@
   <ng-container  *ngIf="step === 'redirect'">
     <p>{{count}}</p>
     <p>You'll be redirected to the app soon.</p>
-    <p>If youre not redirected after the countdown is finished, close the browser manually (top-left corner)</p>
+    <p>If you're not redirected after the countdown is finished, close the browser manually (top-left corner)</p>
   </ng-container>
-
+  
   <ng-container  *ngIf="step === 'error'">
     <p>ERROR</p>
+    <p>Please close the browser manually (top-left corner)</p>
   </ng-container>
 </ion-content>

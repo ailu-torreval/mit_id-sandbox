@@ -17,11 +17,11 @@ import { Base64 } from 'js-base64';
   standalone: false,
 })
 export class HomePage implements OnInit, OnDestroy {
-  url = 'https://nykapital-group-aps.sandbox.signicat.com';
-  // url = 'https://nykapital-group-aps.app.signicat.com';
+  // url = 'https://nykapital-group-aps.sandbox.signicat.com';
+  url = 'https://nykapital-group-aps.app.signicat.com';
   // signicat_secret = 'rXbA5fvDVbQdXNuKLvFUfzTd7P7xl9GtnKbKMDxtfc3VIJD7';
-  // client_id = 'prod-lively-tray-727';
-  client_id = 'sandbox-high-train-160';
+  client_id = 'prod-lively-tray-727';
+  // client_id = 'sandbox-high-train-160';
   redirectUri = 'https://mitid-test-99d1b.web.app';
   message: string = '';
 
