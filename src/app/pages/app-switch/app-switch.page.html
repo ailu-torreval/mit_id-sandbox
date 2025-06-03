@@ -7,11 +7,22 @@
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">app-switch bb</ion-title>
+      <ion-title size="large">app-switch</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <pre>{{ paramsLog | json }}</pre>
+  <ng-container *ngIf="step === 'init'">
+    <ion-spinner name="crescent"></ion-spinner>
+    <ion-text> Redirecting to MitID...</ion-text>
+  </ng-container>
 
-  <!-- <ion-button (click)="redirect()" >Redirect to App</ion-button> -->
+  <ng-container  *ngIf="step === 'redirect'">
+    <p>{{count}}</p>
+    <p>You'll be redirected to the app soon.</p>
+    <p>If youre not redirected after the countdown is finished, close the browser manually (top-left corner)</p>
+  </ng-container>
+
+  <ng-container  *ngIf="step === 'error'">
+    <p>ERROR</p>
+  </ng-container>
 </ion-content>
