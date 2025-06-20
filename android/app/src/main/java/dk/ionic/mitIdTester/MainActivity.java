@@ -6,11 +6,13 @@ import android.os.Bundle;
 import android.util.Log;
 import com.getcapacitor.BridgeActivity;
 import com.epicshaggy.biometric.NativeBiometric;
+import dk.nykapital.capacitor_customtabs.CustomTabsPlugin;
 
 public class MainActivity extends BridgeActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         registerPlugin(NativeBiometric.class);
+        registerPlugin(CustomTabsPlugin.class);
         super.onCreate(savedInstanceState);
         handleIntent(getIntent());
     }

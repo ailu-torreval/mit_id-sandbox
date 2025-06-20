@@ -9,6 +9,7 @@ import {
 } from '@capacitor/inappbrowser';
 import { AlertController } from '@ionic/angular';
 import { Base64 } from 'js-base64';
+import { CustomTabs } from 'src/plugins/custom-tabs';
 
 @Component({
   selector: 'app-home',
@@ -223,7 +224,7 @@ export class HomePage implements OnInit, OnDestroy {
 
         console.log(`📡 Response status: ${response.status}`);
 
-        if (response.status === 200 || response.status === 201) {
+        if (response.status === 201) {
           console.log('✅ OAuth session found:',response.status);
           this.broswerManuallyClosed = true;
           InAppBrowser.close();
@@ -237,7 +238,7 @@ export class HomePage implements OnInit, OnDestroy {
           // } else {
           //   console.log('⚠️ OAuth session found but data is incomplete:', data);
           // }
-        } else if (response.status === 404) {
+        } else if (response.status === 200) {
           console.log('⏳ OAuth session not ready yet (404)');
         } else if (response.status >= 400) {
           console.log(`❌ OAuth polling failed with status ${response.status}`);
@@ -273,6 +274,14 @@ export class HomePage implements OnInit, OnDestroy {
 
     console.log('⏰ Polling timeout - 3 minutes reached');
     this.stopPolling();
+  }
+
+  async openCustomTab() {
+    try {
+      await CustomTabs.openUrl({ url: 'https://www.google.com' });
+    } catch (error) {
+      console.error('Error:', error);
+    }
   }
 
   // Helper method for abortable delay
