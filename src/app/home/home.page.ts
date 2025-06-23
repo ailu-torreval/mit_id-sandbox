@@ -278,7 +278,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   async openCustomTab() {
     try {
-      await CustomTabs.openUrl({ url: 'https://www.google.com' });
+      await CustomTabs.openUrl({ url: 'https://www.nykapital.dk' });
     } catch (error) {
       console.error('Error:', error);
     }

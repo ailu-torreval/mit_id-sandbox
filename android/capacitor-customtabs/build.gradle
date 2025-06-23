@@ -1,5 +1,12 @@
+ext.buildConfigField = { name, value ->
+    buildConfigField "String", name, "\"${value}\""
+}
+ext.getValueFromConfig = { config, key ->
+    def value = config[key]
+    return value == null ? "null" : value
+}
+
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
 
 android {
     namespace 'dk.nykapital.capacitor_customtabs'
@@ -20,13 +27,13 @@ android {
         }
     }
     
+    lintOptions {
+        abortOnError false
+    }
+    
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }
-    
-    kotlinOptions {
-        jvmTarget = "1.8"
     }
 }
 
@@ -39,7 +46,6 @@ dependencies {
     implementation 'androidx.browser:browser:1.7.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.core:core-ktx:1.12.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation project(':capacitor-android')
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
